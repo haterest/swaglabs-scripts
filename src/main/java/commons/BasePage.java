@@ -5,6 +5,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageObjects.LoginPO;
+import pageObjects.PageObjectManager;
+import pageObjects.ShoppingCartPO;
 
 import java.time.Duration;
 import java.util.List;
@@ -73,6 +76,18 @@ public class BasePage {
 
     protected void clickToElement(String locator, String... dynamicValues) {
         getWebElement(getDynamicXpath(locator, dynamicValues)).click();
+    }
+
+    protected void sendKeyToElement(String locator, String textValue) {
+        WebElement element = getWebElement(locator);
+        element.clear();
+        element.sendKeys(textValue);
+    }
+
+    protected void sendKeyToElement(String locator, String textValue, String... dynamicValues) {
+        WebElement element = getWebElement(getDynamicXpath(locator, dynamicValues));
+        element.clear();
+        element.sendKeys(textValue);
     }
 
     protected String getElementAttribute(String locator, String attributeName) {
@@ -201,7 +216,31 @@ public class BasePage {
                 .until(ExpectedConditions.elementToBeClickable(getByLocator(getDynamicXpath(locator, dynamicValues))));
     }
 
+    public ShoppingCartPO clickShoppingCartIcon() {
+        waitForElementClickable(BasePageUI.SHOPPING_CART_ICON);
+        clickToElement(BasePageUI.SHOPPING_CART_ICON);
+        return PageObjectManager.getShoppingCartPage(driver);
+    }
+
+    public void clickSideBarMenuButton() {
+        waitForElementClickable(BasePageUI.SIDE_BAR_MENU_BUTTON);
+        clickToElement(BasePageUI.SIDE_BAR_MENU_BUTTON);
+        sleepInSecond(1);
+    }
+
+    public void clickResetAppStateLink() {
+        waitForElementClickable(BasePageUI.RESET_APP_STATE_LINK);
+        clickToElement(BasePageUI.RESET_APP_STATE_LINK);
+        sleepInSecond(1);
+    }
+
+    public LoginPO clickToLogoutLink() {
+        waitForElementClickable(BasePageUI.LOGOUT_LINK);
+        clickToElement(BasePageUI.LOGOUT_LINK);
+        return PageObjectManager.getLoginPage(driver);
+    }
+
     protected WebDriver driver;
     protected Duration longTimeout = Duration.ofSeconds(20);
-    protected Duration shortTimeout = Duration.ofSeconds(5);
+    protected Duration shortTimeout = Duration.ofSeconds(3);
 }
