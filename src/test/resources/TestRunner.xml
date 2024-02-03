@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="Swag Labs">
+    <listeners>
+        <listener class-name="commons.MethodListener"/>
+    </listeners>
     <test name="Run On Chrome">
         <classes>
             <class name="swaglabs.testscipts.AddToCart_Function"/>
+            <class name="swaglabs.testscipts.CheckOut_Function"/>
         </classes>
     </test>
 </suite>

@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageObjects.InventoryPO;
 import pageObjects.LoginPO;
 import pageObjects.PageObjectManager;
 import pageObjects.ShoppingCartPO;
@@ -17,11 +18,7 @@ public class BasePage {
         this.driver = driver;
     }
 
-    public void openPageURL(String pageURL) {
-        driver.get(pageURL);
-    }
-
-    public void refreshCurrentPage( ) {
+    protected void refreshCurrentPage( ) {
         driver.navigate().refresh();
     }
 
@@ -35,15 +32,7 @@ public class BasePage {
 
     private By getByLocator(String locatorType) {
         By by;
-        if (locatorType.startsWith("id=") || locatorType.startsWith("Id=") || locatorType.startsWith("ID=")) {
-            by = By.id(locatorType.substring(3));
-        } else if (locatorType.startsWith("class=") || locatorType.startsWith("Class=")
-                || locatorType.startsWith("CLASS=")) {
-            by = By.className(locatorType.substring(6));
-        } else if (locatorType.startsWith("name=") || locatorType.startsWith("Name=")
-                || locatorType.startsWith("NAME=")) {
-            by = By.name(locatorType.substring(5));
-        } else if (locatorType.startsWith("css=") || locatorType.startsWith("Css=") || locatorType.startsWith("CSS=")) {
+        if (locatorType.startsWith("css=") || locatorType.startsWith("Css=") || locatorType.startsWith("CSS=")) {
             by = By.cssSelector(locatorType.substring(4));
         } else if (locatorType.startsWith("xpath=") || locatorType.startsWith("Xpath=")
                 || locatorType.startsWith("XPATH=") || locatorType.startsWith("XPath=")) {
@@ -83,21 +72,6 @@ public class BasePage {
         element.clear();
         element.sendKeys(textValue);
     }
-
-    protected void sendKeyToElement(String locator, String textValue, String... dynamicValues) {
-        WebElement element = getWebElement(getDynamicXpath(locator, dynamicValues));
-        element.clear();
-        element.sendKeys(textValue);
-    }
-
-    protected String getElementAttribute(String locator, String attributeName) {
-        return getWebElement(locator).getAttribute(attributeName);
-    }
-
-    protected String getElementAttribute(String locator, String attributeName, String... dynamicValues) {
-        return getWebElement(getDynamicXpath(locator, dynamicValues)).getAttribute(attributeName);
-    }
-
     protected String getElementText(String locator) {
         return getWebElement(locator).getText();
     }
@@ -106,70 +80,21 @@ public class BasePage {
         return getWebElement(getDynamicXpath(locator, dynamicValues)).getText();
     }
 
-    protected int getElementsSize(String locator) {
-        return getListWebElement(locator).size();
-    }
-
-    protected int getElementsSize(String locator, String... dynamicValues) {
-        return getListWebElement(getDynamicXpath(locator, dynamicValues)).size();
-    }
-    protected boolean isElementDisplayed(String locator) {
-        return getWebElement(locator).isDisplayed();
-    }
-
     protected boolean isElementDisplayed(String locator, String... dynamicValues) {
         return getWebElement(getDynamicXpath(locator, dynamicValues)).isDisplayed();
-    }
-
-    protected boolean isElementUndisplayed(String locator) {
-        overrideGlobalTimeout(shortTimeout);
-        List<WebElement> elements = getListWebElement(locator);
-        overrideGlobalTimeout(longTimeout);
-        if (elements.size() == 0) {
-            return true;
-        } else return !elements.get(0).isDisplayed();
     }
 
     protected boolean isElementUndisplayed(String locator, String... dynamicValues) {
         overrideGlobalTimeout(shortTimeout);
         List<WebElement> elements = getListWebElement(getDynamicXpath(locator, dynamicValues));
         overrideGlobalTimeout(longTimeout);
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return true;
         } else return !elements.get(0).isDisplayed();
     }
 
-    /*
-     * Wait for element undisplayed in DOM or not in DOM and override implicit Timeout
-     */
-    protected void waitForElementUndisplayed(String locator) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, shortTimeout);
-        overrideGlobalTimeout(shortTimeout);
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(getByLocator(locator)));
-        overrideGlobalTimeout(longTimeout);
-    }
-
-    protected void waitForAllElementsInvisible(String locator) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(ExpectedConditions.invisibilityOfAllElements(getListWebElement(locator)));
-    }
-
-    protected void waitForAllElementsInvisible(String locator, String... dynamicValues) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(ExpectedConditions
-                .invisibilityOfAllElements(getListWebElement(getDynamicXpath(locator, dynamicValues))));
-    }
-
     private void overrideGlobalTimeout(Duration timeOut) {
         driver.manage().timeouts().implicitlyWait(timeOut);
-    }
-
-    protected boolean isElementSelected(String locator) {
-        return getWebElement(locator).isSelected();
-    }
-
-    protected boolean isElementSelected(String locator, String... dynamicValues) {
-        return getWebElement(getDynamicXpath(locator, dynamicValues)).isSelected();
     }
 
     protected void waitForElementVisible(String locator) {
@@ -181,28 +106,6 @@ public class BasePage {
         WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
         explicitWait.until(
                 ExpectedConditions.visibilityOfElementLocated(getByLocator(getDynamicXpath(locator, dynamicValues))));
-    }
-
-    protected void waitForAllElementsVisible(String locator) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(getByLocator(locator)));
-    }
-
-    protected void waitForAllElementsVisible(String locator, String... dynamicValues) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(ExpectedConditions
-                .visibilityOfAllElementsLocatedBy(getByLocator(getDynamicXpath(locator, dynamicValues))));
-    }
-
-    protected void waitForElementInvisible(String locator) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(ExpectedConditions.invisibilityOfElementLocated(getByLocator(locator)));
-    }
-
-    protected void waitForElementInvisible(String locator, String... dynamicValues) {
-        WebDriverWait explicitWait = new WebDriverWait(driver, longTimeout);
-        explicitWait.until(
-                ExpectedConditions.invisibilityOfElementLocated(getByLocator(getDynamicXpath(locator, dynamicValues))));
     }
 
     protected void waitForElementClickable(String locator) {
@@ -240,7 +143,15 @@ public class BasePage {
         return PageObjectManager.getLoginPage(driver);
     }
 
+    public InventoryPO clickAllItemsLink() {
+        waitForElementClickable(BasePageUI.ALL_ITEMS_LINK);
+        clickToElement(BasePageUI.ALL_ITEMS_LINK);
+        refreshCurrentPage();
+        return PageObjectManager.getInventoryPage(driver);
+    }
+
     protected WebDriver driver;
-    protected Duration longTimeout = Duration.ofSeconds(20);
+    protected Duration longTimeout = Duration.ofSeconds(10);
     protected Duration shortTimeout = Duration.ofSeconds(3);
+
 }
