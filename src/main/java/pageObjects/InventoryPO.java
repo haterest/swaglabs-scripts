@@ -20,4 +20,9 @@ public class InventoryPO extends BasePage {
         waitForElementClickable(InventoryUI.ADD_TO_CART_BUTTON_BY_NAME, productName);
         clickToElement(InventoryUI.ADD_TO_CART_BUTTON_BY_NAME, productName);
     }
+
+    public boolean isDisplayProductHeader() {
+        waitForElementVisible(InventoryUI.PRODUCT_TITLE_HEADER);
+        return isElementDisplayed(InventoryUI.PRODUCT_TITLE_HEADER);
+    }
 }

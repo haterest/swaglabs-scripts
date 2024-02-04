@@ -31,8 +31,8 @@ public class CheckoutPO extends BasePage {
     }
 
     public String getTotalPriceProduct(String producPrice) {
-        Double productPrice = Double.parseDouble(producPrice.replace("$", ""));
-        Double taxPrice = Double.parseDouble(getElementText(CheckoutUI.TAX_PRICE).substring(6));
+        Float productPrice = Float.parseFloat(producPrice.replace("$", ""));
+        Float taxPrice = Float.parseFloat(getElementText(CheckoutUI.TAX_PRICE).substring(6));
         return String.valueOf(productPrice + taxPrice);
     }
 
@@ -79,5 +79,11 @@ public class CheckoutPO extends BasePage {
     public boolean isDisplayShippingInformation(String shippingInfor) {
         waitForElementVisible(CheckoutUI.INFORMATION_VALUE_BY_NAME, shippingInfor);
         return isElementDisplayed(CheckoutUI.INFORMATION_VALUE_BY_NAME, shippingInfor);
+    }
+
+    public InventoryPO clickCancelButton() {
+        waitForElementClickable(CheckoutUI.CANCEL_BUTTON);
+        clickToElement(CheckoutUI.CANCEL_BUTTON);
+        return PageObjectManager.getInventoryPage(driver);
     }
 }

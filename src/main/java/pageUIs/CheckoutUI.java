@@ -13,4 +13,5 @@ public class CheckoutUI {
     public static final String TOTAL_PRICE_BILL = "css=div.summary_info_label.summary_total_label";
     public static final String FINISH_BUTTON = "css=#finish";
     public static final String SUCCESSFULL_ORDER_MESSAGE = "css=h2.complete-header";
+    public static final String CANCEL_BUTTON = "css=#cancel";
 }

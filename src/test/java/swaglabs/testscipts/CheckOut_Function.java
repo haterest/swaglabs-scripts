@@ -19,6 +19,7 @@ public class CheckOut_Function extends BaseTest {
         password = "secret_sauce";
         boltTshirtProduct = "Sauce Labs Bolt T-Shirt";
         backpackProduct = "Sauce Labs Backpack";
+        bikeLightProduct = "Sauce Labs Bike Light";
         paymentInfor = "SauceCard #31337";
         shipInfor = "Free Pony Express Delivery!";
 
@@ -27,13 +28,64 @@ public class CheckOut_Function extends BaseTest {
     }
 
     @Test
+    public void CheckOut_01_Displayed_Product_Detail_In_Checkout_Overview(){
+        itemDetailPage = inventoryPage.clickToProductLinkByName(backpackProduct);
+        productInfor = itemDetailPage.getProductInfor();
+        productPrice = itemDetailPage.getProductPrice();
+        itemDetailPage.clickAddToCartButton();
+        shoppingCartPage = itemDetailPage.clickShoppingCartIcon();
+        verifyTrue(shoppingCartPage.isDisplayedProductInCartByName(backpackProduct));
+        checkoutPage = shoppingCartPage.clickCheckoutButton();
+        checkoutPage.inputToFirstNameTextbox(dataHelper.getFirstName());
+        checkoutPage.inputToLastNameTextbox(dataHelper.getLastName());
+        checkoutPage.inputToZipPostalCodeTextbox(dataHelper.getZipCode());
+        checkoutPage.clickToContinueButton();
+        totalPrice = checkoutPage.getTotalPriceProduct(productPrice);
+        verifyTrue(checkoutPage.isDisplayProductReviewByName(backpackProduct));
+        verifyEquals(checkoutPage.getProductReviewDescriptionByName(backpackProduct), productInfor);
+        verifyEquals(checkoutPage.getProductReviewPriceByName(backpackProduct), productPrice);
+        verifyTrue(checkoutPage.isDisplayPaymentInformation(paymentInfor));
+        verifyTrue(checkoutPage.isDisplayShippingInformation(shipInfor));
+        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + productPrice);
+        verifyEquals(checkoutPage.getTotalPriceBill(), "Total: $" + totalPrice);
+    }
+
+    @Test
+    public void CheckOut_02_Cancel_Checkout(){
+        checkoutPage.clickSideBarMenuButton();
+        checkoutPage.clickResetAppStateLink();
+        inventoryPage = checkoutPage.clickAllItemsLink();
+        itemDetailPage = inventoryPage.clickToProductLinkByName(bikeLightProduct);
+        productInfor = itemDetailPage.getProductInfor();
+        productPrice = itemDetailPage.getProductPrice();
+        itemDetailPage.clickAddToCartButton();
+        shoppingCartPage = itemDetailPage.clickShoppingCartIcon();
+        verifyTrue(shoppingCartPage.isDisplayedProductInCartByName(bikeLightProduct));
+        checkoutPage = shoppingCartPage.clickCheckoutButton();
+        checkoutPage.inputToFirstNameTextbox(dataHelper.getFirstName());
+        checkoutPage.inputToLastNameTextbox(dataHelper.getLastName());
+        checkoutPage.inputToZipPostalCodeTextbox(dataHelper.getZipCode());
+        checkoutPage.clickToContinueButton();
+        totalPrice = checkoutPage.getTotalPriceProduct(productPrice);
+        verifyTrue(checkoutPage.isDisplayProductReviewByName(bikeLightProduct));
+        verifyEquals(checkoutPage.getProductReviewDescriptionByName(bikeLightProduct), productInfor);
+        verifyEquals(checkoutPage.getProductReviewPriceByName(bikeLightProduct), productPrice);
+        verifyTrue(checkoutPage.isDisplayPaymentInformation(paymentInfor));
+        verifyTrue(checkoutPage.isDisplayShippingInformation(shipInfor));
+        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + productPrice);
+        verifyEquals(checkoutPage.getTotalPriceBill(), "Total: $" + totalPrice);
+        inventoryPage = checkoutPage.clickCancelButton();
+        verifyTrue(inventoryPage.isDisplayProductHeader());
+    }
+
+    @Test
     public void CheckOut_03_Order_Successfully(){
         inventoryPage.clickSideBarMenuButton();
         inventoryPage.clickResetAppStateLink();
         inventoryPage = inventoryPage.clickAllItemsLink();
         itemDetailPage = inventoryPage.clickToProductLinkByName(boltTshirtProduct);
-        String productInfor = itemDetailPage.getProductInfor();
-        String producPrice = itemDetailPage.getProductPrice();
+        productInfor = itemDetailPage.getProductInfor();
+        productPrice = itemDetailPage.getProductPrice();
         itemDetailPage.clickAddToCartButton();
         shoppingCartPage = itemDetailPage.clickShoppingCartIcon();
         verifyTrue(shoppingCartPage.isDisplayedProductInCartByName(boltTshirtProduct));
@@ -42,13 +94,13 @@ public class CheckOut_Function extends BaseTest {
         checkoutPage.inputToLastNameTextbox(dataHelper.getLastName());
         checkoutPage.inputToZipPostalCodeTextbox(dataHelper.getZipCode());
         checkoutPage.clickToContinueButton();
-        String totalPrice = checkoutPage.getTotalPriceProduct(producPrice);
+        totalPrice = checkoutPage.getTotalPriceProduct(productPrice);
         verifyTrue(checkoutPage.isDisplayProductReviewByName(boltTshirtProduct));
         verifyEquals(checkoutPage.getProductReviewDescriptionByName(boltTshirtProduct), productInfor);
-        verifyEquals(checkoutPage.getProductReviewPriceByName(boltTshirtProduct), producPrice);
+        verifyEquals(checkoutPage.getProductReviewPriceByName(boltTshirtProduct), productPrice);
         verifyTrue(checkoutPage.isDisplayPaymentInformation(paymentInfor));
         verifyTrue(checkoutPage.isDisplayShippingInformation(shipInfor));
-        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + producPrice);
+        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + productPrice);
         verifyEquals(checkoutPage.getTotalPriceBill(), "Total: $" + totalPrice);
         checkoutPage.clickToFinishButton();
         verifyEquals(checkoutPage.getSuccessfullOrderMessage(), "Thank you for your order!");
@@ -62,8 +114,8 @@ public class CheckOut_Function extends BaseTest {
         inventoryPage = loginPage.loginByUsernameAndPassword(errorUser, password);
 
         itemDetailPage = inventoryPage.clickToProductLinkByName(backpackProduct);
-        String productInfor = itemDetailPage.getProductInfor();
-        String producPrice = itemDetailPage.getProductPrice();
+        productInfor = itemDetailPage.getProductInfor();
+        productPrice = itemDetailPage.getProductPrice();
         itemDetailPage.clickAddToCartButton();
         shoppingCartPage = itemDetailPage.clickShoppingCartIcon();
         verifyTrue(shoppingCartPage.isDisplayedProductInCartByName(backpackProduct));
@@ -72,13 +124,13 @@ public class CheckOut_Function extends BaseTest {
         checkoutPage.inputToLastNameTextbox(dataHelper.getLastName());
         checkoutPage.inputToZipPostalCodeTextbox(dataHelper.getZipCode());
         checkoutPage.clickToContinueButton();
-        String totalPrice = checkoutPage.getTotalPriceProduct(producPrice);
+        totalPrice = checkoutPage.getTotalPriceProduct(productPrice);
         verifyTrue(checkoutPage.isDisplayProductReviewByName(backpackProduct));
         verifyEquals(checkoutPage.getProductReviewDescriptionByName(backpackProduct), productInfor);
-        verifyEquals(checkoutPage.getProductReviewPriceByName(backpackProduct), producPrice);
+        verifyEquals(checkoutPage.getProductReviewPriceByName(backpackProduct), productPrice);
         verifyTrue(checkoutPage.isDisplayPaymentInformation(paymentInfor));
         verifyTrue(checkoutPage.isDisplayShippingInformation(shipInfor));
-        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + producPrice);
+        verifyEquals(checkoutPage.getItemTotalPrice(), "Item total: " + productPrice);
         verifyEquals(checkoutPage.getTotalPriceBill(), "Total: $" + totalPrice);
         checkoutPage.clickToFinishButton();
         verifyEquals(checkoutPage.getSuccessfullOrderMessage(), "Thank you for your order!");
@@ -90,7 +142,8 @@ public class CheckOut_Function extends BaseTest {
     }
 
     WebDriver driver;
-    private String standardUser, errorUser, password, boltTshirtProduct, backpackProduct, paymentInfor, shipInfor;
+    private String standardUser, errorUser, password, boltTshirtProduct, backpackProduct, paymentInfor, shipInfor,
+            productInfor, productPrice, totalPrice, bikeLightProduct;
     private LoginPO loginPage;
     private InventoryPO inventoryPage;
     private ItemDetailPO itemDetailPage;
